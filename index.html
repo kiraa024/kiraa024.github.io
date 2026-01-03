@@ -10,20 +10,31 @@ body {
     margin: 0;
     background-color: #000;
     color: #fff;
+    font-family: "Courier New", Courier, Monaco;
+    overflow: hidden;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh; /* full viewport height */
-    font-family: "Courier New", Courier, Monaco;
+    height: 100vh;
+}
+
+canvas#starfield {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1;
 }
 
 .container {
-    text-align: left; /* keeps the terminal feel */
+    text-align: left;
     max-width: 600px;
 }
 
 a {
     text-decoration: none;
+    color: #fff;
     text-shadow:
         -1px -1px 0 #000,
          1px -1px 0 #000,
@@ -31,7 +42,6 @@ a {
          1px  1px 0 #000;
     font-weight: 500;
     font-size: 8pt;
-    color: #fff;
 }
 
 a:hover {
@@ -41,15 +51,12 @@ a:hover {
 pre {
     font-size: 8pt;
     white-space: pre-wrap;
-    text-shadow:
-        -1px -1px 0 #000,
-         1px -1px 0 #000,
-        -1px  1px 0 #000,
-         1px  1px 0 #000;
+    margin: 0;
 }
 
 .title {
     font-size: 16pt;
+    font-weight: bold;
 }
 
 .title:hover {
@@ -59,11 +66,11 @@ pre {
 </head>
 
 <body>
+<canvas id="starfield"></canvas>
+
 <div class="container">
 <pre>
-<a class="title" href="index.html">kiraa024.github.io</a>
-made by <a href="https://github.com/kiraa024">Kira024</a>
-
+<a class="title" href="index.html">kiraa024.github.io</a> <br> made by <a href="https://github.com/kiraa024">Kira024</a>
 
 <b>[about]</b>
 <b>I develop software for fun in my free time.</b>
@@ -75,31 +82,72 @@ made by <a href="https://github.com/kiraa024">Kira024</a>
 <a href="#" onclick="copyDiscord()">discord</a>
 
 <b>[projects]</b>
-
-<a href="https://github.com/kiraa024/GTA5-ASI-MenuBase">
-    <b>- GTA5-ASI-MenuBase (DX11 ASI Menu Base) -</b>
-</a>
-<a href="https://github.com/kiraa024/DX11-ImGui-Overlay-Hook">
-    <b>- DX11 Hook Base</b>
-</a>
-<a href="https://github.com/kiraa024/Simple-Injector">
-    <b>- Simple Injector using LoadLibrary -</b>
-</a>
-<a href="https://github.com/kiraa024/WinForms.Modern">
-    <b>- Project WinForms.Modern (UI Library) -</b>
-</a>
+<a href="https://github.com/kiraa024/GTA5-ASI-MenuBase">- GTA5-ASI-MenuBase (DX11 ASI Menu Base) -</a>
+<a href="https://github.com/kiraa024/DX11-ImGui-Overlay-Hook">- DX11 Hook Base</a>
+<a href="https://github.com/kiraa024/Simple-Injector">- Simple Injector using LoadLibrary</a>
+<a href="https://github.com/kiraa024/WinForms.Modern">- Project WinForms.Modern (UI Library) -</a>
 
 <b>[skills]</b>
-<b>- HTML / CSS</b>
+<b>- HTML / CSS / JS</b>
 <b>- C# </b>
 <b>- Learning C++</b>
 <b>- Learning Reverse Engineering</b>
+<b>- Learning Cyber Security</b>
 </pre>
 </div>
+
 <script>
 function copyDiscord() {
     navigator.clipboard.writeText("kira024.");
 }
+
+// Starfield
+const canvas = document.getElementById("starfield");
+const ctx = canvas.getContext("2d");
+let stars = [];
+const starCount = 150;
+
+function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+window.addEventListener("resize", resizeCanvas);
+resizeCanvas();
+
+for (let i = 0; i < starCount; i++) {
+    stars.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        z: Math.random() * canvas.width
+    });
+}
+
+function animate() {
+    ctx.fillStyle = "black";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    for (let i = 0; i < starCount; i++) {
+        let star = stars[i];
+        star.z -= 2;
+        if (star.z <= 0) {
+            star.z = canvas.width;
+            star.x = Math.random() * canvas.width;
+            star.y = Math.random() * canvas.height;
+        }
+
+        let sx = (star.x - canvas.width/2) * (canvas.width / star.z) + canvas.width/2;
+        let sy = (star.y - canvas.height/2) * (canvas.width / star.z) + canvas.height/2;
+        let radius = (1 - star.z / canvas.width) * 2;
+
+        ctx.beginPath();
+        ctx.arc(sx, sy, radius, 0, Math.PI*2);
+        ctx.fillStyle = "white";
+        ctx.fill();
+    }
+
+    requestAnimationFrame(animate);
+}
+animate();
 </script>
 </body>
 </html>
